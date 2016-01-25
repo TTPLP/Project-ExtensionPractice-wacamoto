@@ -3,17 +3,25 @@ function init() {
         active: true,
         currentWindow: true
     }, function(tabs) {
+        FB.init({
+            appId: '1674115332869324',
+            xfbml: true,
+            version: 'v2.5'
+        })
         if (localStorage.accessToken) {
-            console.log(localStorage.accessToken)
-            $('#showAccessToken').html(localStorage.accessToken)
+            FB.api('/me/picture', 'GET',{access_token: localStorage.accessToken}, function(response){
+                var img = $('<img>', {src: response.data.url})
+                $('body').append(img)
+                console.log(response.data.url)
+            })
         } else {
-            loginFacebook(init)
+            loginFacebook()
         }    
     })
 }
 
 function loginFacebook() {
-    function windowScript() {
+    function windowScript(windows) {
         chrome.tabs.query({
             active: true
         }, function(tabs) {
@@ -24,7 +32,6 @@ function loginFacebook() {
                 var accessToken = params.split('&')[0];
                 localStorage.accessToken = accessToken.split('=')[1];
             })
-            chrome.windows.remove(tabs.id);
         })
     }
 
@@ -45,13 +52,10 @@ function loginFacebook() {
             client_id:      1674115332869324,
             response_type:  'token',
             redirect_uri:   'http://localhost:8000/',
-            scope:          'publish_actions'
-        }),
-        'width': 580,
-        'height': 400
+            scope:          'publish_actions,user_birthday'
+        })
     }, windowScript)
 }
 
 init()
 
-$('#showAccessToken').html(localStorage.accessToken)
