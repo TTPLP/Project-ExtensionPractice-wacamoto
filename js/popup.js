@@ -4,11 +4,13 @@ function init() {
         currentWindow: true
     }, function(tabs) {
         FB.init({
-            appId: '1674115332869324',
-            xfbml: true,
-            version: 'v2.5'
+            appId:      '1674115332869324',
+            xfbml:      true,
+            version:    'v2.5'
         })
-        if (localStorage.accessToken) {
+        var now = Date.now()
+        if (localStorage.accessToken && localStorage.expiresTime > now) {
+            // for test
             FB.api('/me/picture', 'GET',{access_token: localStorage.accessToken}, function(response){
                 var img = $('<img>', {src: response.data.url})
                 $('body').append(img)
@@ -21,6 +23,7 @@ function init() {
 }
 
 function loginFacebook() {
+
     function windowScript(windows) {
         chrome.tabs.query({
             active: true
@@ -30,7 +33,10 @@ function loginFacebook() {
                 var tabUrl = tab.url;
                 var params = tabUrl.split('#')[1];
                 var accessToken = params.split('&')[0];
+                var expiresTime = params.split('&')[1];
+                expiresTime = expiresTime.split('=')[1];
                 localStorage.accessToken = accessToken.split('=')[1];
+                localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
             })
         })
     }
@@ -51,7 +57,7 @@ function loginFacebook() {
         'url' : loginURL('www.facebook.com', '/dialog/oauth', {
             client_id:      1674115332869324,
             response_type:  'token',
-            redirect_uri:   'http://localhost:8000/',
+            redirect_uri:   'http://pika.tw:8000/',
             scope:          'publish_actions,user_birthday'
         })
     }, windowScript)
