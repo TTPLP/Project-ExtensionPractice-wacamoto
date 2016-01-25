@@ -1,0 +1,21 @@
+{
+    "manifest_version": 2,
+
+    "name": "fb-extension",
+    "description": "show facebook message",
+    "version": "1.0",
+
+    "browser_action": {
+        "default_popup": "popup.html"
+    },
+
+    "permissions": [
+        "tabs",
+        "https://connect.facebook.net/",
+        "https://graph.facebook.com/"
+    ],
+
+    "web_accessible_resources": ["popup.html"],
+
+    "content_security_policy": "script-src 'self' https://connect.facebook.net 'self' https://graph.facebook.com; object-src 'self'"
+}
