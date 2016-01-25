@@ -10,8 +10,8 @@ function init() {
         })
         var now = Date.now()
         if (localStorage.accessToken && localStorage.expiresTime > now) {
-            // for test
-            FB.api('/me/picture', 'GET',{access_token: localStorage.accessToken}, function(response){
+            // show picture
+            FB.api('/me/notification', 'GET',{access_token: localStorage.accessToken}, function (response){
                 var img = $('<img>', {src: response.data.url})
                 $('body').append(img)
                 console.log(response.data.url)
@@ -19,6 +19,16 @@ function init() {
         } else {
             loginFacebook()
         }    
+    })
+}
+
+// Publish a Post
+function  PublishPost() {
+    FB.api('/me/feed', 'POST', {
+        access_token: localStorage.accessToken,
+        message: $('#message').val()
+    }, function (response) {
+        console.log(response)
     })
 }
 
@@ -58,7 +68,7 @@ function loginFacebook() {
             client_id:      1674115332869324,
             response_type:  'token',
             redirect_uri:   'http://pika.tw:8000/',
-            scope:          'publish_actions,user_birthday'
+            scope:          'publish_actions,publish_actions'
         })
     }, windowScript)
 }
