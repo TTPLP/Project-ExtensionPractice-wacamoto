@@ -5,7 +5,7 @@ app = {
     redirect_uri:   'http://www.facebook.com/connect/login_success.html',
 }
 
-function init() {
+window.fbAsyncInit = function init() {
     chrome.tabs.query({
         active: true,
         currentWindow: true
@@ -85,4 +85,15 @@ function loginURL(site, path, params) {
     return 'https://'.concat(site, path, urlpar)
 }
 
-init()
+
+
+(function(d, s, id){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+
+
