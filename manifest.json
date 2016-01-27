@@ -15,6 +15,10 @@
         "https://graph.facebook.com/"
     ],
 
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+
     "web_accessible_resources": ["popup.html"],
 
     "content_security_policy": "script-src 'self' https://connect.facebook.net 'self' https://graph.facebook.com; object-src 'self'"

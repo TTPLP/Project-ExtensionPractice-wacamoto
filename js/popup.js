@@ -1,10 +1,17 @@
+app = {
+    id:             1674115332869324,
+    scope:          'publish_actions,publish_actions',
+    client_secret:  '3c4181b5d7db9c166d38dbd6773d52f6',
+    redirect_uri:   'http://www.facebook.com/connect/login_success.html',
+}
+
 function init() {
     chrome.tabs.query({
         active: true,
         currentWindow: true
     }, function(tabs) {
         FB.init({
-            appId:      '1674115332869324',
+            appId:      app.id,
             xfbml:      true,
             version:    'v2.5'
         })
@@ -14,63 +21,68 @@ function init() {
             FB.api('/me/picture', 'GET',{access_token: localStorage.accessToken}, function (response){
                 var img = $('<img>', {src: response.data.url})
                 $('body').append(img)
-                console.log(response.data.url)
             })
+            // test 
+            getLongLiveToken(localStorage.accessToken)
         } else {
             loginFacebook()
         }    
     })
 }
 
-// Publish a Post
-// function  PublishPost() {
-//     FB.api('/me/feed', 'POST', {
-//         access_token: localStorage.accessToken,
-//         message: $('#message').val()
-//     }, function (response) {
-//         console.log(response)
-//     })
-// }
+// get 60 day expiresTime accessToken 
+function getLongLiveToken(accessToken) {
+    // FB.api('/oauth/access_token', 'GET', {
+    //     client_id:          '1674115332869324',
+    //     client_secret:      '3c4181b5d7db9c166d38dbd6773d52f6',
+    //     grant_type:         'fb_exchange_token',
+    //     fb_exchange_token:  localStorage.accessToken
+    // }, function (response) {
+    //     console.log(response)
+    //     console.log(
+    //         'access_token:' + response.access_token + 
+    //         'expires_in:' + response.expires_in
+    //     )
+    // })
+    $.ajax({
+        type: 'GET',
+        url: loginURL('graph.facebook.com', '/oauth/access_token', {
+            client_id:          app.id,
+            client_secret:      app.client_secret,
+            grant_type:         'fb_exchange_token',
+            fb_exchange_token:  localStorage.accessToken
+        })
+    }).done(function(response) {
+        var accessToken = response.split('&')[0];
+        var expiresTime = response.split('&')[1];
+        expiresTime = expiresTime.split('=')[1];
+        console.log(expiresTime)
+        localStorage.accessToken = accessToken.split('=')[1];
+        localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
+    })
+}
 
 function loginFacebook() {
-
-    function windowScript(windows) {
-        chrome.tabs.query({
-            active: true
-        }, function(tabs) {
-            tabid = tabs[0].id;
-            chrome.tabs.onUpdated.addListener(function(tabid, tab) {
-                var tabUrl = tab.url;
-                var params = tabUrl.split('#')[1];
-                var accessToken = params.split('&')[0];
-                var expiresTime = params.split('&')[1];
-                expiresTime = expiresTime.split('=')[1];
-                localStorage.accessToken = accessToken.split('=')[1];
-                localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
-            })
-        })
-    }
-
-    function loginURL(site, path, params) {
-        var urlpar = '';
-        if (params) {
-            var keys = Object.keys(params);
-            for (var i = 0; i < keys.length; i++) {
-                urlpar += keys[i] + '=' + params[keys[i]] + '&'
-            }
-            urlpar = '?' + urlpar 
-        }
-        return 'https://'.concat(site, path, urlpar)
-    }
-
     chrome.windows.create({
         'url' : loginURL('www.facebook.com', '/dialog/oauth', {
-            client_id:      1674115332869324,
+            client_id:      app.id,
+            redirect_uri:   app.redirect_uri,
             response_type:  'token',
-            redirect_uri:   'http://www.facebook.com/connect/login_success.html',
-            scope:          'publish_actions,publish_actions'
+            scope:          'user_posts'
         })
-    }, windowScript)
+    })
+}
+
+function loginURL(site, path, params) {
+    var urlpar = '';
+    if (params) {
+        var keys = Object.keys(params);
+        for (var i = 0; i < keys.length; i++) {
+            urlpar += keys[i] + '=' + params[keys[i]] + '&'
+        }
+        urlpar = '?' + urlpar 
+    }
+    return 'https://'.concat(site, path, urlpar)
 }
 
 init()
