@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
 
-    "name": "fb-extension",
+    "name": "Project-pikachu-wacamoto",
     "description": "show facebook message",
     "version": "1.0",
 
@@ -9,15 +9,15 @@
         "default_popup": "popup.html"
     },
 
+    "background": {
+        "page": "background.html"
+    },
+
     "permissions": [
         "tabs",
         "https://connect.facebook.net/",
         "https://graph.facebook.com/"
     ],
-
-    "background": {
-        "scripts": ["js/background.js"]
-    },
 
     "web_accessible_resources": ["popup.html"],
 
