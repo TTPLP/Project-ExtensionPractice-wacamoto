@@ -29,6 +29,8 @@ function getToken() {
                 var accessToken = params.split('&')[0];
                 var expiresTime = params.split('&')[1];
                 expiresTime = expiresTime.split('=')[1];
+
+                // store accessToken & expiresTime
                 localStorage.accessToken = accessToken.split('=')[1];
                 localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
                 
@@ -53,6 +55,8 @@ function getLongLiveToken(accessToken) {
         var accessToken = response.split('&')[0];
         var expiresTime = response.split('&')[1];
         expiresTime = expiresTime.split('=')[1];
+
+        // store accessToken & expiresTime
         localStorage.accessToken = accessToken.split('=')[1];
         localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
     })

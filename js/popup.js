@@ -11,7 +11,9 @@ window.fbAsyncInit = function init() {
         var now = Date.now()
         if (localStorage.accessToken && localStorage.expiresTime > now) {
             // show picture
-            FB.api('/me/picture', 'GET',{access_token: localStorage.accessToken}, function (response){
+            FB.api('/me/picture', 'GET', {
+                access_token: localStorage.accessToken
+            }, function (response) {
                 var img = $('<img>', {src: response.data.url})
                 $('body').append(img)
             })
@@ -29,6 +31,15 @@ function loginFacebook() {
             response_type:  'token',
             scope:          'user_posts'
         })
+    })
+}
+
+function showPosts() {
+    FB.api('/me/feed', 'GET', {
+        fields: 'id,comments,picture,message',
+        accessToken: localStorage.accessToken
+    }, function (response) {
+        console.log(response)
     })
 }
 
