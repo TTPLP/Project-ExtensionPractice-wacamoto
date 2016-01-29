@@ -2,7 +2,7 @@ app = {
     id:             1674115332869324,
     scope:          'publish_actions,publish_actions',
     client_secret:  '3c4181b5d7db9c166d38dbd6773d52f6',
-    redirect_uri:   'http://www.facebook.com/connect/login_success.html',
+    redirect_uri:   'www.facebook.com/connect/login_success.html',
 }
 
 function loginURL(site, path, params) {
