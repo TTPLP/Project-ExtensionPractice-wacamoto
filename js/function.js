@@ -1,6 +1,6 @@
 app = {
     id:             1674115332869324,
-    scope:          'publish_actions,publish_actions',
+    scope:          'user_posts',
     client_secret:  '3c4181b5d7db9c166d38dbd6773d52f6',
     redirect_uri:   'www.facebook.com/connect/login_success.html',
 }
@@ -24,18 +24,21 @@ function getToken() {
     }, function(tabs) {
         for (var i = 0; i < tabs.length; i++) {
             if (tabs[i].url.indexOf(app.redirect_uri) !== -1) {
-                var tabUrl = tabs[i].url;
-                var params = tabUrl.split('#')[1];
-                var accessToken = params.split('&')[0];
-                var expiresTime = params.split('&')[1];
-                expiresTime = expiresTime.split('=')[1];
+                if (tabs[i].url.indexOf('redirect_uri') === -1) {
+                    console.log('match' + tabs[i].url)
+                    var tabUrl = tabs[i].url;
+                    var params = tabUrl.split('#')[1];
+                    var accessToken = params.split('&')[0];
+                    var expiresTime = params.split('&')[1];
+                    expiresTime = expiresTime.split('=')[1];
 
-                // store accessToken & expiresTime
-                localStorage.accessToken = accessToken.split('=')[1];
-                localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
-                
-                // get 60 day accessToken
-                getLongLiveToken(localStorage.accessToken)    
+                    // store accessToken & expiresTime
+                    localStorage.accessToken = accessToken.split('=')[1];
+                    localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
+                    
+                    // get 60 day accessToken
+                    getLongLiveToken(localStorage.accessToken)
+                }
             }
         }
     })

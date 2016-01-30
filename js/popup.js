@@ -1,23 +1,18 @@
 window.fbAsyncInit = function init() {
-    chrome.tabs.query({
-        active: true,
-        currentWindow: true
-    }, function(tabs) {
-        FB.init({
-            appId:      app.id,
-            xfbml:      true,
-            version:    'v2.5'
-        })
-        var now = Date.now()
-        if (localStorage.accessToken && localStorage.expiresTime > now) {
-        // test
-        showPosts()
-        // test
-        showPicture()
-        } else {
-            loginFacebook()
-        }    
+    FB.init({
+        appId:      app.id,
+        xfbml:      true,
+        version:    'v2.5'
     })
+    var now = Date.now()
+    if (localStorage.accessToken && localStorage.expiresTime > now) {
+    // test
+    showPosts()
+    // test
+    showPicture()
+    } else {
+        loginFacebook()
+    }    
 }
 
 function showPicture() {
@@ -36,6 +31,7 @@ function showPosts() {
         fields: 'from,created_time,message,picture,likes,comments',
         access_token: localStorage.accessToken
     }, function(response) {
+        console.log(response)
         var posts = response.data;
         for (var i = 0; i < posts.length; i++) {
             var post = $('<div></div>').addClass('post')
