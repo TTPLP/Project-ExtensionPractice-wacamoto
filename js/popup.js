@@ -4,12 +4,13 @@ window.fbAsyncInit = function init() {
         xfbml:      true,
         version:    'v2.5'
     })
+
     var now = Date.now()
     if (localStorage.accessToken && localStorage.expiresTime > now) {
     // test
     showPosts()
-    // test
     showPicture()
+    
     } else {
         loginFacebook()
     }    
@@ -20,26 +21,41 @@ function showPicture() {
         fields: 'name,picture',
         access_token: localStorage.accessToken
     }, function (response) {
-        var img = $('<img>', {src: response.picture.data.url})
-        $('#me').append(img)
-        $('#me').append(response.name, $('<input type="text" />'))
+        $('#myPicture').attr('src', response.picture.data.url)
+        $('#myName').append(response.name)
     })
 }
 
-function showPosts() {
-    FB.api('/me/feed', 'GET', {
-        fields: 'from,created_time,message,picture,likes,comments',
-        access_token: localStorage.accessToken
+function writePost() {
+    var message = $('#writePost').val()
+    // clear input value
+    $('#writePost').val('')
+    FB.api('/me/feed', 'POST', {
+        message: message,
+        access_token: localStorage.accessToken        
     }, function(response) {
         console.log(response)
+    })
+}
+
+//
+// ugly function...  for temporary 
+//
+function showPosts() {
+    FB.api('/me/feed', 'GET', {
+        fields: 'from{name,picture},created_time,message,picture \
+                ,likes,comments{message,from{name,picture}}',
+        access_token: localStorage.accessToken
+    }, function(response) {
         var posts = response.data;
         for (var i = 0; i < posts.length; i++) {
             var post = $('<div></div>').addClass('post')
 
             if (posts[i].from) {
                 var poster = $('<span></span>').html(posts[i].from.name)
+                var picture = $('<img>',{src:posts[i].from.picture.data.url})
                 poster.addClass('post-poster')
-                post.append(poster)
+                post.append(picture, poster)
             }
             if (posts[i].created_time) {
                 var d = new Date(posts[i].created_time)
@@ -69,9 +85,10 @@ function showPosts() {
                 
                 for (var c = 0; c < comments.length; c++) {
                     var name = $('<span></span>').html(comments[c].from.name);
+                    var picture = $('<img>', {src: comments[c].from.picture.data.url})
                     var commentMessage = comments[c].message;
                     var comment = $('<p></p>').addClass('comment')
-                    comment.append(name, ' ' + commentMessage)
+                    comment.append(picture, name, ' ' + commentMessage)
                     commentsTag.append(comment)
                 }
                 post.append(commentsTag)
