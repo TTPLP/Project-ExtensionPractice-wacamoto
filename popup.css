@@ -11,17 +11,40 @@ body{
 
 }
 
+.post > *{
+    width: 100%;
+    margin: 10px 0px;
+    display: block;
+}
+
+#writePost-text{
+    font-size: 1.5em; 
+}
+
+#writePost-btn{
+    color: #fff;
+    font-size: 2em;
+    background-color: #33a;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#writePost-btn:hover{
+    background-color: #55c;
+}
+
 .post-poster{
     font-size: 1.2em;
     font-weight: bold;
 }
 
 .post-time{
-    color: #555;
+    font-size: 1.2em;
+    color: #999;
 }
 
 .post-message{
-    margin: 15px
+    margin: 15px 0px;
     font-size: 1.2em;
     color: #555;
 }
@@ -29,6 +52,11 @@ body{
 .post-picture{
     margin: 15px 0px;
     width: 100%;
+}
+
+.post-likes{
+    font-size: 1.3em;
+    color: #55a;
 }
 
 .comments{
@@ -49,5 +77,5 @@ body{
 
 .comment span{
     font-weight: bold;
-    color: #22e;
+    color: #55a;
 }

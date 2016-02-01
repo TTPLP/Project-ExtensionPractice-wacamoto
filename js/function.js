@@ -10,11 +10,11 @@ function loginURL(site, path, params) {
     if (params) {
         var keys = Object.keys(params);
         for (var i = 0; i < keys.length; i++) {
-            urlpar += keys[i] + '=' + params[keys[i]] + '&'
+            urlpar += keys[i] + '=' + params[keys[i]] + '&';
         }
-        urlpar = '?' + urlpar 
+        urlpar = '?' + urlpar;
     }
-    return 'https://'.concat(site, path, urlpar)
+    return 'https://'.concat(site, path, urlpar);
 }
 
 // get facebook accessToken
@@ -25,7 +25,7 @@ function getToken() {
         for (var i = 0; i < tabs.length; i++) {
             if (tabs[i].url.indexOf(app.redirect_uri) !== -1) {
                 if (tabs[i].url.indexOf('redirect_uri') === -1) {
-                    console.log('match' + tabs[i].url)
+                    console.log('match' + tabs[i].url);
                     var tabUrl = tabs[i].url;
                     var params = tabUrl.split('#')[1];
                     var accessToken = params.split('&')[0];
@@ -37,7 +37,7 @@ function getToken() {
                     localStorage.expiresTime = Date.now() + Number(expiresTime)*1000;
                     
                     // get 60 day accessToken
-                    getLongLiveToken(localStorage.accessToken)
+                    getLongLiveToken(localStorage.accessToken);
                 }
             }
         }
